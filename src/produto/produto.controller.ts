@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
+import { FiltrosProdutoDto } from './dto/filtros-produto.dto';
 import { ProdutoService } from './produto.service';
 import { Produto } from './schema/produto.schema';
 
@@ -11,5 +12,12 @@ export class ProdutoController {
   @EventPattern('criar-produto')
   async criarProduto(@Payload() produto: Produto): Promise<void> {
     await this.produtoService.criarProduto(produto);
+  }
+
+  @MessagePattern('buscar-produtos')
+  async buscarProdutos(
+    filtrosProdutoDto: FiltrosProdutoDto,
+  ): Promise<Produto[]> {
+    return this.produtoService.buscarProdutos(filtrosProdutoDto);
   }
 }
