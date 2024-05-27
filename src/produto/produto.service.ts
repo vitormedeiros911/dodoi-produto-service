@@ -12,10 +12,8 @@ export class ProdutoService {
   ) {}
 
   async criarProduto(produto: Produto): Promise<void> {
-    const id = uuid();
-
     const novoProduto = new this.produtoModel({
-      id,
+      id: uuid(),
       ...produto,
     });
 
