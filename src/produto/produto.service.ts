@@ -38,4 +38,8 @@ export class ProdutoService {
 
     return query.exec();
   }
+
+  async buscarProdutoPorId(id: string): Promise<Produto> {
+    return this.produtoModel.findOne({ id });
+  }
 }

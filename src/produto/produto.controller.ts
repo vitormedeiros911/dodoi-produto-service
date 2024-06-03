@@ -20,4 +20,9 @@ export class ProdutoController {
   ): Promise<Produto[]> {
     return this.produtoService.buscarProdutos(filtrosProdutoDto);
   }
+
+  @MessagePattern('buscar-produto-por-id')
+  async buscarProdutoPorId(id: string): Promise<Produto> {
+    return this.produtoService.buscarProdutoPorId(id);
+  }
 }

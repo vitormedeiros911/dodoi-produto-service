@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import mongoose from 'mongoose';
 
 import { AppModule } from './app.module';
 
@@ -21,6 +22,14 @@ async function bootstrap() {
       },
     },
   );
+
+  mongoose.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: function (_doc, ret) {
+      delete ret._id;
+    },
+  });
 
   await app.listen().then(() => logger.log('Executando microserviço'));
 }
