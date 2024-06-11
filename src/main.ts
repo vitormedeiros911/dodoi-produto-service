@@ -5,6 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import mongoose from 'mongoose';
 
 import { AppModule } from './app.module';
+import { LoggingInterceptor } from './shared/middlewares/logging.interceptor';
 
 const logger = new Logger('Main');
 const configService = new ConfigService();
@@ -22,6 +23,8 @@ async function bootstrap() {
       },
     },
   );
+
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   mongoose.set('toJSON', {
     virtuals: true,
