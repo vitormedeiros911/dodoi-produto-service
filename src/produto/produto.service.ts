@@ -50,7 +50,7 @@ export class ProdutoService {
 
     const farmacia = await firstValueFrom(
       this.clientFarmaciaBackend.send(
-        'buscar-farmacia-para-produto',
+        'buscar-farmacia-reduzida',
         produto.idFarmacia,
       ),
     );
