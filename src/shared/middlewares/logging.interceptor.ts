@@ -11,9 +11,7 @@ import { tap, catchError } from 'rxjs/operators';
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const logString = `[${context.switchToHttp().getRequest().method} ${
-      context.switchToHttp().getRequest().url
-    }] chamando ${context.getClass().name}.${context.getHandler().name}(). Duração:`;
+    const logString = `Chamando ${context.getClass().name}.${context.getHandler().name}(). Duração:`;
 
     const now = Date.now();
     return next.handle().pipe(
