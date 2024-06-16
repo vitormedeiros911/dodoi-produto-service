@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
@@ -19,6 +20,16 @@ export class ProdutoService {
     this.clientProxyService.getClientProxyFarmaciaServiceInstance();
 
   async criarProduto(produto: Produto): Promise<void> {
+    const farmacia = await firstValueFrom(
+      this.clientFarmaciaBackend.send(
+        'buscar-farmacia-por-id',
+        produto.idFarmacia,
+      ),
+    );
+
+    if (!farmacia)
+      throw new RpcException(new NotFoundException('Farmácia não encontrada'));
+
     const novoProduto = new this.produtoModel({
       id: uuid(),
       ...produto,
@@ -59,5 +70,22 @@ export class ProdutoService {
       ...produto.toJSON(),
       farmacia,
     };
+  }
+
+  async atualizarProduto(id: string, payloadProduto: Produto): Promise<void> {
+    const produto = await this.produtoModel
+      .findOne({ id })
+      .select(['idFarmacia'])
+      .exec();
+
+    if (!produto)
+      throw new RpcException(new NotFoundException('Produto não encontrado'));
+
+    if (payloadProduto.idFarmacia !== produto.idFarmacia)
+      throw new RpcException(
+        new NotFoundException('Produto não pertence a esta farmácia'),
+      );
+
+    await this.produtoModel.updateOne({ id }, payloadProduto);
   }
 }
