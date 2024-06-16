@@ -38,9 +38,7 @@ export class ProdutoService {
     novoProduto.save();
   }
 
-  async buscarProdutos(
-    filtrosProdutoDto: FiltrosProdutoDto,
-  ): Promise<Produto[]> {
+  async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
     const { nome, limit, skip } = filtrosProdutoDto;
 
     const query = this.produtoModel
@@ -53,7 +51,12 @@ export class ProdutoService {
 
     if (limit) query.limit(limit);
 
-    return query.exec();
+    const produtos = await query.exec();
+
+    return {
+      total: produtos.length,
+      produtos,
+    };
   }
 
   async buscarProdutoPorId(id: string) {

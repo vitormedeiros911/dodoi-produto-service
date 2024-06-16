@@ -15,9 +15,7 @@ export class ProdutoController {
   }
 
   @MessagePattern('buscar-produtos')
-  async buscarProdutos(
-    filtrosProdutoDto: FiltrosProdutoDto,
-  ): Promise<Produto[]> {
+  async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
     return this.produtoService.buscarProdutos(filtrosProdutoDto);
   }
 
