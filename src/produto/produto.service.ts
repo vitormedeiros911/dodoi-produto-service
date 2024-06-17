@@ -29,13 +29,15 @@ export class ProdutoService {
   }
 
   async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
-    const { nome, limit, skip } = filtrosProdutoDto;
+    const { nome, status, limit, skip } = filtrosProdutoDto;
 
     const query = this.produtoModel
       .find()
       .select(['id', 'nome', 'precoUnitario', 'urlImagem']);
 
     if (nome) query.where('nome').regex(new RegExp(nome, 'i'));
+
+    if (status) query.where('status').equals(status);
 
     const countQuery = this.produtoModel
       .find(query.getFilter())
@@ -76,7 +78,7 @@ export class ProdutoService {
   async atualizarProduto(payloadProduto: Produto) {
     const produto = await this.produtoModel
       .findOne({ id: payloadProduto.id })
-      .select(['idFarmacia'])
+      .select(['id', 'idFarmacia'])
       .exec();
 
     if (!produto)
