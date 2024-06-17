@@ -24,10 +24,8 @@ export class ProdutoController {
     return this.produtoService.buscarProdutoPorId(id);
   }
 
-  @EventPattern('atualizar-produto')
-  async atualizarProduto(
-    @Payload() { id, produto }: { id: string; produto: Produto },
-  ): Promise<void> {
-    await this.produtoService.atualizarProduto(id, produto);
+  @MessagePattern('atualizar-produto')
+  async atualizarProduto(@Payload() produto: Produto): Promise<void> {
+    return this.produtoService.atualizarProduto(produto);
   }
 }

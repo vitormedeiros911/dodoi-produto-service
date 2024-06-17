@@ -62,6 +62,9 @@ export class ProdutoService {
   async buscarProdutoPorId(id: string) {
     const produto = await this.produtoModel.findOne({ id });
 
+    if (!produto)
+      throw new RpcException(new NotFoundException('Produto não encontrado'));
+
     const farmacia = await firstValueFrom(
       this.clientFarmaciaBackend.send(
         'buscar-farmacia-reduzida',
@@ -75,9 +78,9 @@ export class ProdutoService {
     };
   }
 
-  async atualizarProduto(id: string, payloadProduto: Produto): Promise<void> {
+  async atualizarProduto(payloadProduto: Produto): Promise<void> {
     const produto = await this.produtoModel
-      .findOne({ id })
+      .findOne({ id: payloadProduto.id })
       .select(['idFarmacia'])
       .exec();
 
@@ -86,9 +89,12 @@ export class ProdutoService {
 
     if (payloadProduto.idFarmacia !== produto.idFarmacia)
       throw new RpcException(
-        new NotFoundException('Produto não pertence a esta farmácia'),
+        new NotFoundException('O produto não pertence a esta farmácia'),
       );
 
-    await this.produtoModel.updateOne({ id }, payloadProduto);
+    await this.produtoModel.updateOne(
+      { id: payloadProduto.id },
+      payloadProduto,
+    );
   }
 }

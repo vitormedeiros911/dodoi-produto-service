@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import { StatusEnum } from '../interface/status.enum';
+
 @Schema({ timestamps: true, collection: 'produtos' })
 export class Produto {
   @Prop({ required: true })
@@ -16,6 +18,9 @@ export class Produto {
 
   @Prop({ required: true })
   precoUnitario: number;
+
+  @Prop({ required: true, default: StatusEnum.ATIVO })
+  status: string;
 
   @Prop({ required: true })
   idFarmacia: string;
