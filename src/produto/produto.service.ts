@@ -19,23 +19,13 @@ export class ProdutoService {
   private clientFarmaciaBackend =
     this.clientProxyService.getClientProxyFarmaciaServiceInstance();
 
-  async criarProduto(produto: Produto): Promise<void> {
-    const farmacia = await firstValueFrom(
-      this.clientFarmaciaBackend.send(
-        'buscar-farmacia-por-id',
-        produto.idFarmacia,
-      ),
-    );
-
-    if (!farmacia)
-      throw new RpcException(new NotFoundException('Farmácia não encontrada'));
-
+  async criarProduto(produto: Produto) {
     const novoProduto = new this.produtoModel({
       id: uuid(),
       ...produto,
     });
 
-    novoProduto.save();
+    await novoProduto.save();
   }
 
   async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
@@ -83,7 +73,7 @@ export class ProdutoService {
     };
   }
 
-  async atualizarProduto(payloadProduto: Produto): Promise<void> {
+  async atualizarProduto(payloadProduto: Produto) {
     const produto = await this.produtoModel
       .findOne({ id: payloadProduto.id })
       .select(['idFarmacia'])
@@ -101,5 +91,9 @@ export class ProdutoService {
       { id: payloadProduto.id },
       payloadProduto,
     );
+
+    return {
+      mensagem: 'Produto atualizado com sucesso',
+    };
   }
 }

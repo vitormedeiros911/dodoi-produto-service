@@ -10,7 +10,7 @@ export class ProdutoController {
   constructor(private readonly produtoService: ProdutoService) {}
 
   @EventPattern('criar-produto')
-  async criarProduto(@Payload() produto: Produto): Promise<void> {
+  async criarProduto(@Payload() produto: Produto) {
     await this.produtoService.criarProduto(produto);
   }
 
@@ -25,7 +25,7 @@ export class ProdutoController {
   }
 
   @MessagePattern('atualizar-produto')
-  async atualizarProduto(@Payload() produto: Produto): Promise<void> {
+  async atualizarProduto(@Payload() produto: Produto) {
     return this.produtoService.atualizarProduto(produto);
   }
 }
