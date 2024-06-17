@@ -47,14 +47,19 @@ export class ProdutoService {
 
     if (nome) query.where('nome').regex(new RegExp(nome, 'i'));
 
+    const countQuery = this.produtoModel
+      .find(query.getFilter())
+      .countDocuments();
+
     if (skip) query.skip(skip);
 
     if (limit) query.limit(limit);
 
     const produtos = await query.exec();
+    const total = await countQuery.exec();
 
     return {
-      total: produtos.length,
+      total,
       produtos,
     };
   }
