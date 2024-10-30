@@ -15,12 +15,12 @@ export class ProdutoController {
   }
 
   @MessagePattern('buscar-produtos')
-  async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
+  async buscarProdutos(@Payload() filtrosProdutoDto: FiltrosProdutoDto) {
     return this.produtoService.buscarProdutos(filtrosProdutoDto);
   }
 
   @MessagePattern('buscar-produto-por-id')
-  async buscarProdutoPorId(id: string): Promise<Produto> {
+  async buscarProdutoPorId(@Payload() id: string): Promise<Produto> {
     return this.produtoService.buscarProdutoPorId(id);
   }
 
