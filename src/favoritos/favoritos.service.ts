@@ -45,4 +45,14 @@ export class FavoritosService {
       favoritos,
     };
   }
+
+  async removerFavoritos(favoritos: Favoritos) {
+    await this.favoritosModel.deleteOne(favoritos).exec();
+  }
+
+  async isFavorito(idProduto: string, idCliente: string) {
+    return new Boolean(
+      await this.favoritosModel.exists({ idProduto, idCliente }),
+    );
+  }
 }

@@ -11,5 +11,6 @@ import { FavoritosSchema } from './schema/favoritos.schema';
   ],
   providers: [FavoritosService],
   controllers: [FavoritosController],
+  exports: [FavoritosService],
 })
 export class FavoritosModule {}

@@ -14,6 +14,11 @@ export class FavoritosController {
     await this.favoritosService.criarFavoritos(favoritos);
   }
 
+  @EventPattern('remover-favorito')
+  async removerFavorito(@Payload() favoritos: Favoritos) {
+    await this.favoritosService.removerFavoritos(favoritos);
+  }
+
   @MessagePattern('buscar-produtos-favoritos')
   async buscarProdutosFavoritos(
     @Payload() filtrosFavoritosDto: FiltrosFavoritosDto,

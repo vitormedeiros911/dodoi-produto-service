@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { v4 as uuid } from 'uuid';
 
 import { ClientProxyService } from '../client-proxy/client-proxy.service';
+import { FavoritosService } from '../favoritos/favoritos.service';
 import { FiltrosProdutoDto } from './dto/filtros-produto.dto';
 import { Produto } from './schema/produto.schema';
 
@@ -14,6 +15,7 @@ export class ProdutoService {
   constructor(
     @InjectModel('Produto') private readonly produtoModel: Model<Produto>,
     private clientProxyService: ClientProxyService,
+    private favoritosService: FavoritosService,
   ) {}
 
   private clientFarmaciaBackend =
@@ -56,7 +58,7 @@ export class ProdutoService {
     };
   }
 
-  async buscarProdutoPorId(id: string) {
+  async buscarProdutoPorId(id: string, idCliente: string) {
     const produto = await this.produtoModel.findOne({ id });
 
     if (!produto)
@@ -69,8 +71,11 @@ export class ProdutoService {
       ),
     );
 
+    const isFavorito = await this.favoritosService.isFavorito(id, idCliente);
+
     return {
       ...produto.toJSON(),
+      isFavorito,
       farmacia,
     };
   }

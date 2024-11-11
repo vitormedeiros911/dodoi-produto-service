@@ -20,8 +20,10 @@ export class ProdutoController {
   }
 
   @MessagePattern('buscar-produto-por-id')
-  async buscarProdutoPorId(@Payload() id: string): Promise<Produto> {
-    return this.produtoService.buscarProdutoPorId(id);
+  async buscarProdutoPorId(
+    @Payload() { id, idCliente }: { id: string; idCliente: string },
+  ): Promise<Produto> {
+    return this.produtoService.buscarProdutoPorId(id, idCliente);
   }
 
   @MessagePattern('atualizar-produto')
