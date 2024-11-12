@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ClientProxyModule } from '../client-proxy/client-proxy.module';
@@ -9,11 +9,12 @@ import { FavoritosModule } from 'src/favoritos/favoritos.module';
 
 @Module({
   imports: [
-    FavoritosModule,
+    forwardRef(() => FavoritosModule),
     ClientProxyModule,
     MongooseModule.forFeature([{ name: 'Produto', schema: ProdutoSchema }]),
   ],
   providers: [ProdutoService],
   controllers: [ProdutoController],
+  exports: [ProdutoService],
 })
 export class ProdutoModule {}

@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
+import { ProdutoService } from '../produto/produto.service';
+import { StatusEnum } from '../shared/interface/status.enum';
+import { CriarFavoritoDto } from './dto/criar-favorito.dto';
 import { FiltrosFavoritosDto } from './dto/filtros-favoritos.dto';
 import { Favoritos } from './schema/favoritos.schema';
 
@@ -10,12 +13,19 @@ import { Favoritos } from './schema/favoritos.schema';
 export class FavoritosService {
   constructor(
     @InjectModel('Favoritos') private readonly favoritosModel: Model<Favoritos>,
+    @Inject(forwardRef(() => ProdutoService))
+    private produtoService: ProdutoService,
   ) {}
 
-  async criarFavoritos(favoritos: Favoritos) {
+  async criarFavoritos(criarFavoritoDto: CriarFavoritoDto) {
+    const produto = await this.produtoService.buscarProdutoReduzido(
+      criarFavoritoDto.idProduto,
+    );
+
     const novoFavorito = new this.favoritosModel({
       id: uuid(),
-      ...favoritos,
+      idCliente: criarFavoritoDto.idCliente,
+      produto,
     });
 
     await novoFavorito.save();
@@ -26,6 +36,11 @@ export class FavoritosService {
 
     const query = this.favoritosModel
       .find()
+      .populate({
+        path: 'produto',
+        select: 'id nome urlImagem precoUnitario',
+        match: { status: StatusEnum.ATIVO },
+      })
       .where('idCliente')
       .equals(idCliente);
 

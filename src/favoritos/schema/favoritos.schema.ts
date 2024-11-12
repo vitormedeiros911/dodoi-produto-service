@@ -1,4 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
+
+import { Produto } from '../../produto/schema/produto.schema';
 
 @Schema({ timestamps: true, collection: 'favoritos' })
 export class Favoritos {
@@ -8,8 +11,12 @@ export class Favoritos {
   @Prop({ required: true })
   idCliente: string;
 
-  @Prop({ required: true })
-  idProduto: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Produto',
+    required: true,
+  })
+  produto: Produto;
 }
 
 export const FavoritosSchema = SchemaFactory.createForClass(Favoritos);

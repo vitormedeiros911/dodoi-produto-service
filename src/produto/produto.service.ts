@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -15,6 +20,7 @@ export class ProdutoService {
   constructor(
     @InjectModel('Produto') private readonly produtoModel: Model<Produto>,
     private clientProxyService: ClientProxyService,
+    @Inject(forwardRef(() => FavoritosService))
     private favoritosService: FavoritosService,
   ) {}
 
@@ -78,6 +84,18 @@ export class ProdutoService {
       isFavorito,
       farmacia,
     };
+  }
+
+  async buscarProdutoReduzido(id: string) {
+    const produto = await this.produtoModel
+      .findOne({ id })
+      .select(['id', 'nome', 'precoUnitario', 'urlImagem'])
+      .exec();
+
+    if (!produto)
+      throw new RpcException(new NotFoundException('Produto não encontrado'));
+
+    return produto;
   }
 
   async atualizarProduto(payloadProduto: Produto) {
