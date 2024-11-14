@@ -65,9 +65,12 @@ export class FavoritosService {
     await this.favoritosModel.deleteOne(favoritos).exec();
   }
 
-  async isFavorito(idProduto: string, idCliente: string) {
-    return new Boolean(
-      await this.favoritosModel.exists({ idProduto, idCliente }),
-    );
+  async isFavorito(idProduto: string, idCliente: string): Promise<boolean> {
+    const favorito = await this.favoritosModel.findOne({ idCliente }).populate({
+      path: 'produto',
+      match: { id: idProduto },
+    });
+
+    return Boolean(favorito && favorito.produto);
   }
 }
