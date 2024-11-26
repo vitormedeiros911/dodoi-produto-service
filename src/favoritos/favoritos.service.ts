@@ -62,7 +62,16 @@ export class FavoritosService {
   }
 
   async removerFavoritos(favoritos: Favoritos) {
-    await this.favoritosModel.deleteOne(favoritos).exec();
+    const produto = await this.produtoService.buscarProdutoReduzido(
+      favoritos.produto.id,
+    );
+
+    await this.favoritosModel
+      .deleteOne({
+        idCliente: favoritos.idCliente,
+        produto,
+      })
+      .exec();
   }
 
   async isFavorito(idProduto: string, idCliente: string): Promise<boolean> {
