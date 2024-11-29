@@ -136,4 +136,8 @@ export class ProdutoService {
       mensagem: 'Produto atualizado com sucesso',
     };
   }
+
+  async deletarProduto(id: string) {
+    await this.produtoModel.updateOne({ id }, { status: StatusEnum.INATIVO });
+  }
 }

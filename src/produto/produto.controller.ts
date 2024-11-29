@@ -30,4 +30,9 @@ export class ProdutoController {
   async atualizarProduto(@Payload() produto: Produto) {
     return this.produtoService.atualizarProduto(produto);
   }
+
+  @EventPattern('deletar-produto')
+  async deletarProduto(@Payload() id: string) {
+    await this.produtoService.deletarProduto(id);
+  }
 }
