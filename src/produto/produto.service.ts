@@ -8,10 +8,12 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { StatusEnum } from 'src/shared/interface/status.enum';
 import { v4 as uuid } from 'uuid';
 
 import { ClientProxyService } from '../client-proxy/client-proxy.service';
 import { FavoritosService } from '../favoritos/favoritos.service';
+import { OrderEnum } from '../shared/enum/order.enum';
 import { FiltrosProdutoDto } from './dto/filtros-produto.dto';
 import { Produto } from './schema/produto.schema';
 
@@ -37,19 +39,32 @@ export class ProdutoService {
   }
 
   async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
-    const { nome, status, limit, skip } = filtrosProdutoDto;
+    const { nome, status, idFarmacia, limit, skip, order, orderBy } =
+      filtrosProdutoDto;
 
     const query = this.produtoModel
       .find()
-      .select(['id', 'nome', 'precoUnitario', 'urlImagem']);
+      .select([
+        'id',
+        'nome',
+        'precoUnitario',
+        'urlImagem',
+        'quantidadeDisponivel',
+      ]);
 
     if (nome) query.where('nome').regex(new RegExp(nome, 'i'));
 
+    if (idFarmacia) query.where('idFarmacia').equals(idFarmacia);
+
     if (status) query.where('status').equals(status);
+    else query.where('status').equals(StatusEnum.ATIVO);
 
     const countQuery = this.produtoModel
       .find(query.getFilter())
       .countDocuments();
+
+    if (order && orderBy)
+      query.sort({ [orderBy]: order === OrderEnum.ASC ? 'asc' : 'desc' });
 
     if (skip) query.skip(skip);
 
