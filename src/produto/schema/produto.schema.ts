@@ -10,10 +10,10 @@ export class Produto {
   @Prop({ required: true })
   nome: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   descricao: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   urlImagem: string;
 
   @Prop({ required: true })
