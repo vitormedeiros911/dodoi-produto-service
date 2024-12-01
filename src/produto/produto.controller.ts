@@ -35,4 +35,12 @@ export class ProdutoController {
   async deletarProduto(@Payload() id: string) {
     await this.produtoService.deletarProduto(id);
   }
+
+  @EventPattern('reduzir-estoque')
+  async reduzirEstoque(
+    @Payload()
+    { idProduto, quantidade }: { idProduto: string; quantidade: number },
+  ) {
+    await this.produtoService.reduzirEstoque(idProduto, quantidade);
+  }
 }

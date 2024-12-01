@@ -142,4 +142,17 @@ export class ProdutoService {
   async deletarProduto(id: string) {
     await this.produtoModel.updateOne({ id }, { status: StatusEnum.INATIVO });
   }
+
+  async reduzirEstoque(idProduto: string, quantidade: number) {
+    const produto = await this.produtoModel.findOne({ id: idProduto });
+
+    let quantidadeDisponivel = produto.quantidadeDisponivel - quantidade;
+
+    if (produto.quantidadeDisponivel < quantidade) quantidadeDisponivel = 0;
+
+    await this.produtoModel.updateOne(
+      { id: idProduto },
+      { quantidadeDisponivel },
+    );
+  }
 }
