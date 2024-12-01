@@ -43,4 +43,12 @@ export class ProdutoController {
   ) {
     await this.produtoService.reduzirEstoque(idProduto, quantidade);
   }
+
+  @EventPattern('aumentar-estoque')
+  async aumentarEstoque(
+    @Payload()
+    { idProduto, quantidade }: { idProduto: string; quantidade: number },
+  ) {
+    await this.produtoService.aumentarEstoque(idProduto, quantidade);
+  }
 }

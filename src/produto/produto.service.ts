@@ -155,4 +155,15 @@ export class ProdutoService {
       { quantidadeDisponivel },
     );
   }
+
+  async aumentarEstoque(idProduto: string, quantidade: number) {
+    const produto = await this.produtoModel.findOne({ id: idProduto });
+
+    const quantidadeDisponivel = produto.quantidadeDisponivel + quantidade;
+
+    await this.produtoModel.updateOne(
+      { id: idProduto },
+      { quantidadeDisponivel },
+    );
+  }
 }
