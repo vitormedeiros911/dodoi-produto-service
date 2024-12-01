@@ -39,7 +39,7 @@ export class ProdutoService {
   }
 
   async buscarProdutos(filtrosProdutoDto: FiltrosProdutoDto) {
-    const { nome, status, idFarmacia, limit, skip, order, orderBy } =
+    const { nome, status, idFarmacia, categoria, limit, skip, order, orderBy } =
       filtrosProdutoDto;
 
     const query = this.produtoModel
@@ -56,12 +56,10 @@ export class ProdutoService {
 
     if (idFarmacia) query.where('idFarmacia').equals(idFarmacia);
 
+    if (categoria) query.where('categoria').equals(categoria);
+
     if (status) query.where('status').equals(status);
     else query.where('status').equals(StatusEnum.ATIVO);
-
-    const countQuery = this.produtoModel
-      .find(query.getFilter())
-      .countDocuments();
 
     if (order && orderBy)
       query.sort({ [orderBy]: order === OrderEnum.ASC ? 'asc' : 'desc' });
@@ -69,6 +67,10 @@ export class ProdutoService {
     if (skip) query.skip(skip);
 
     if (limit) query.limit(limit);
+
+    const countQuery = this.produtoModel
+      .find(query.getFilter())
+      .countDocuments();
 
     const produtos = await query.exec();
     const total = await countQuery.exec();
