@@ -133,10 +133,6 @@ export class ProdutoService {
       { id: payloadProduto.id },
       payloadProduto,
     );
-
-    return {
-      mensagem: 'Produto atualizado com sucesso',
-    };
   }
 
   async deletarProduto(id: string) {
